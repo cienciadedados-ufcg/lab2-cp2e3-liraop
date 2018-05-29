@@ -5,7 +5,7 @@ output:
     df_print: paged
 ---
 
-```{r, echo=FALSE, message=FALSE}
+```{r setup, include=FALSE, echo=FALSE, message=FALSE}
 library(tidyverse)
 library(viridis)
 library(here)
@@ -18,9 +18,14 @@ theme_set(theme_minimal())
 
 Utilizando a biblioteca `spotifyr`, capturei dados do meu uso de Spotify. Inicilamente, pensei em analisar as minhas canções, álbums e artistas mais ouvidos. Entretanto existe uma peculiaridade dos aplicativos de streaming que é a possibilidade de criar playlists. Geralmente as playlists tem alguma ocasião ou intuito por trás dela. Por exemplo, pessoas gostam de se exercitar ouvindo música. Geralmente é uma playlist mais animada para dar "aquele gás" na academia. Outras preferem chorar o coração para fora com uma playlist bem elaborada. 
 
+```{r, message=FALSE, echo=FALSE}
+dados = read_csv("../data/dados_pedro.csv")
+datatable(dados, options = list(pageLength = 5))
+```
+
 Com isso em mente, fui analisar minhas playlists:
 * Roadetripe: Playlist para uma viagem. Minha ideia era uma playlist mais para cima contando com músicas contemplativas.
-* arcordar: Seleção upbeat, com boas vibrações, que deixam a manhã mais felizes\
+* arcordar: Seleção upbeat, com boas vibrações, que deixam a manhã mais felizes
 * badvibes only: Autoexplicativa
 * se reerguer: Playlist fundamental para fins de relacionamentos 
 * Samba pra Tereza: Uma seleção variada que fiz para minha companheira
@@ -28,19 +33,16 @@ Com isso em mente, fui analisar minhas playlists:
 * Your Top Songs 2016: playlist gerada automaticamente pelo Spotify com as músicas que mais ouvi em 2016. Talvez seja uma boa analisá-la e ver como foi o humor do ano. 
 * Liked from radio: playlist automaticamente gerada com as músicas que são favoritadas durante a reprodução de alguma rádio.
 
-```{r, echo=FALSE, results='hide',message=FALSE}
-dados = read_csv("../data/dados_pedro.csv")
-datatable(dados)
-```
-
 #### 1. Como estão distribuídas as emoções nas playlists selecionadas?
 
-```{r, echo=FALSE, results='hide',message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 plemotions <- dados %>% 
         ggplot(aes(x=energy,
-                   label=track_name,
+                   group=playlist_name, 
+                   text=paste("Artista:",artist_name,"<br>Nome da música:",track_name),
                     y= valence))+
-        stat_density2d(aes(fill=..level..), geom="polygon", n = 100, h = .25) +
+        #stat_density2d(aes(fill=..level..), geom="polygon", n = 100, h = .25) +
+        geom_point() +
         scale_fill_viridis() +
         facet_wrap(~ playlist_name) +
         scale_x_continuous(limits = c(-.05, 1.05)) + 
@@ -51,3 +53,14 @@ plemotions <- dados %>%
 
 ggplotly(plemotions)
 ```
+
+Com as distribuições das músicas em suas respectivas playlists vemos como estão concentradas as músicas em emoção. A emoção aqui é definida por:
+X:Energia - vai de 0 a 1 e representa uma medida perceptual de intensidade e atividade. Normalmente, faixas energéticas são rápidas, altas e cheias de som. As características perceptivas que contribuem para esse atributo incluem a faixa dinâmica, a intensidade percebida, o timbre, a taxa de início e a entropia geral.
+Y:Valência - vai de 0 a 1 e descreve a positividade musical transmitida por uma faixa. Faixas com alta valência soam mais positivas (por exemplo, felizes, alegres, eufóricas), enquanto as faixas com baixa valência soam mais negativas (por exemplo, triste, deprimido, zangado).
+
+Pensando na análise, criaremos uma nova medida `emocão` que será o fator da `energia` dividido pela `valencia`. Isso nos dará um indicador mais claro de como a música foi utilizada para transmitir emoção, isto é, uma música tem uma `energia` alta e ela tem valência baixa, teremos um fator grande de tristeza. Entretando, se ambas `energia` e `valencia` forem altas, teremos uma `emocao`que se aproxima de 1, indicando que o nivel de alegria foi alto.
+
+Podemos conferir que a playlist **Top Songs from 2016** tem músicas que beiram a depressão e a euforia. Entretanto foi um ano bem musicalmente enérgico com bastante valência. **acordar** é um exemplo mais claro de músicas mais enérgicas e mais positivamente emotivas. **se reenguer** também se encaixa nesse cenário. Podemos ver que são músicas enérgicas e com sentimento positivo, no geral.   
+Como esperado, a distribuição para **binaural** é uma coisa estranha. Como as músicas tem variação de dinâmica próxima de 0, a energia delas é próximo do 0. O algoritmo do Spotify ainda classifica a valência dela quanto a frequência. Ondas com frequências mais altas, aparentemente, possuem maior valência. Peculiar.
+
+
