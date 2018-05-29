@@ -20,7 +20,6 @@ Utilizando a biblioteca `spotifyr`, capturei dados do meu uso de Spotify. Inicil
 
 ```{r, message=FALSE, echo=FALSE}
 dados = read_csv("../data/dados_pedro.csv")
-datatable(dados, options = list(pageLength = 5))
 ```
 
 Com isso em mente, fui analisar minhas playlists:
@@ -39,16 +38,16 @@ Com isso em mente, fui analisar minhas playlists:
 plemotions <- dados %>%
         ggplot(aes(x=energy,
                    group=playlist_name, 
-                   text=paste("Artista:",artist_name,"<br>Nome da música:",track_name),
+                   text=paste("Emoção:",energy/valence,"<br>Artista:",artist_name,"<br>Nome da música:",track_name),
                     y= valence))+
-        #stat_density2d(aes(fill=..level..), geom="polygon", n = 100, h = .25) +
+        stat_density2d(aes(fill=..level..), geom="polygon", n = 100, h = .25) +
         geom_point() +
         scale_fill_viridis() +
         facet_wrap(~ playlist_name) +
         scale_x_continuous(limits = c(-.05, 1.05)) + 
         scale_y_continuous(limits = c(-.05, 1.05)) +
         labs(title = "Emoção nas minhas playlists segundo o spotify", 
-         x = "Energia (+ = rápida, alta, cheia de sons)", 
+         x = "Animação (+ = rápida, alta, cheia de sons)", 
          y = "Valência (+ = animada, alegre, eufórica)")
 
 ggplotly(plemotions)
@@ -56,20 +55,37 @@ ggplotly(plemotions)
 
 Com as distribuições das músicas em suas respectivas playlists vemos como estão concentradas as músicas em emoção. A emoção aqui é definida por:
 X:`Energia` - vai de 0 a 1 e representa uma medida perceptual de intensidade e atividade. Normalmente, faixas energéticas são rápidas, altas e cheias de som. As características perceptivas que contribuem para esse atributo incluem a faixa dinâmica, a intensidade percebida, o timbre, a taxa de início e a entropia geral.
-Y:`Valência` - vai de 0 a 1 e descreve a positividade musical transmitida por uma faixa. Faixas com alta valência soam mais positivas (por exemplo, felizes, alegres, eufóricas), enquanto as faixas com baixa valência soam mais negativas (por exemplo, triste, deprimido, zangado).
+Y:`Valência` - vai de 0 a 1 e descreve a positividade musical transmitida por uma faixa. Faixas com alta valência soam mais positivas (por exemplo, felizes, alegres, eufóricas), enquanto as faixas com baixa valência soam mais negativas (por exempl,o triste, deprimido, zangado).
 
-Pensando na análise, criaremos uma nova medida `emocão` que será o fator da `energia` dividido pela `valencia`. Isso nos dará um indicador mais claro de como a música foi utilizada para transmitir emoção, isto é, uma música tem uma `energia` alta e ela tem valência baixa, teremos um fator grande de tristeza. Entretando, se ambas `energia` e `valencia` forem altas, teremos uma `emocao`que se aproxima de 1, indicando que o nivel de alegria foi alto.
+Pensando na análise, criaremos uma nova medida `emocao` que será o fator da `energia` dividido pela `valencia`. Isso nos dará um indicador mais claro de como a música foi utilizada para transmitir emoção, isto é, uma música tem uma `energia` alta e ela tem valência baixa, teremos um fator grande de tristeza. Entretando, se ambas `energia` e `valencia` forem altas, teremos uma `emocao`que se aproxima de 1, indicando que o nivel de alegria foi alto.
 
 Podemos conferir que a playlist **Top Songs from 2016** tem músicas que beiram a depressão e a euforia. Entretanto foi um ano bem musicalmente enérgico com bastante valência. **acordar** é um exemplo mais claro de músicas mais enérgicas e mais positivamente emotivas. **se reenguer** também se encaixa nesse cenário. Podemos ver que são músicas enérgicas e com sentimento positivo, no geral.   
 Como esperado, a distribuição para **binaural** é uma coisa estranha. Como as músicas tem variação de dinâmica próxima de 0, a energia delas é próximo do 0. O algoritmo do Spotify ainda classifica a valência dela quanto a frequência. Ondas com frequências mais altas, aparentemente, possuem maior valência. Peculiar.
 
+
 #### 2. Quais as músicas mais emotivas de todas as playlists?
 
-Certo. Agora vamos entender quais músicas afetam mais as playlist. Ou seja, queremos identificar tanto quais as músicas mais depressivas quanto mais felizes. 
-
+Certo. Agora vamos entender quais músicas afetam mais as playlist. Ou seja, queremos identificar tanto quais as músicas mais depressivas quanto mais felizes.
+Pensando na `valencia` como maior indicador de humor, faremos um gráfico com a coloração do humor das músicas, partindo da mais depressiva (cor escura) pra mais feliz (cor clara).
 
 ```{r, message=FALSE, echo=FALSE}
-musicas <- subset(dados, select = -c(playlist_name,playlist_uri,playlist_tracks_url,playlist_num_tracks,snapshot_id,playlist_img,track_uri,album_img))
-unique(musicas)
+musicas = subset(dados, select = -c(playlist_uri,playlist_tracks_url,playlist_num_tracks,snapshot_id,playlist_img,track_uri,album_img)) 
+musicas = unique(musicas)
+colnames(musicas)[colnames(musicas) == 'valence'] <- "Humor"
 
+plot_ly(musicas,
+        type='scatter',
+        hoverinfo='text',
+        x = ~Humor,
+        y = ~energy,
+        text = ~paste("Artista:", musicas$artist_name,"<br>Nome da música:",musicas$track_name,"<br>Playlist:",musicas$playlist_name),
+        color = ~Humor) %>%
+        layout(title = "Depressivas, de boas ou felizes", 
+           xaxis = list(
+               title = "Humor"),
+           yaxis = list(
+               title = "Animação"),
+           showlegend = FALSE)
 ```
+
+Não considerando as músicas da playlist **binaural**, é possível claramente com a cor identificar as músicas mais felizes e mais depressivas. As que tendem ao azul são músicas triste, sendo enérgicas ou não. Um bom exemplo é a **Why won't they talk to me?** do **Tame Impala**. A música fala sobre isolamento, alienação. Apesar de ter alta energia (animação), é considerada uma música triste. Por outro lado, a música **Under the sun** da **DIIV**  é um exemplo de música animada e feliz. Fala sobre reencontros com a metáfora da alegria que é andar sob o sol. 
