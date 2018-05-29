@@ -1,39 +1,44 @@
 ---
 title: "prob2cp3"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
-```{r message=FALSE, warning=FALSE}
+```{r, echo=FALSE, message=FALSE}
 library(tidyverse)
 library(viridis)
 library(here)
 library(lubridate)
 library(DT)
+library(plotly)
 theme_set(theme_minimal())
 ```
+### Analisando as playlists pessoais do Spotify
 
 Utilizando a biblioteca `spotifyr`, capturei dados do meu uso de Spotify. Inicilamente, pensei em analisar as minhas canções, álbums e artistas mais ouvidos. Entretanto existe uma peculiaridade dos aplicativos de streaming que é a possibilidade de criar playlists. Geralmente as playlists tem alguma ocasião ou intuito por trás dela. Por exemplo, pessoas gostam de se exercitar ouvindo música. Geralmente é uma playlist mais animada para dar "aquele gás" na academia. Outras preferem chorar o coração para fora com uma playlist bem elaborada. 
 
 Com isso em mente, fui analisar minhas playlists:
-- Roadetripe: Playlist para uma viagem. Minha ideia era uma playlist mais para cima contando com músicas contemplativas.
-- arcordar: Seleção upbeat, com boas vibrações, que deixam a manhã mais felizes\
-- badvibes only: Autoexplicativa
-- se reerguer: Playlist fundamental para fins de relacionamentos 
-- Samba pra Tereza: Uma seleção variada que fiz para minha companheira
-- binaural: É um ponto fora da curva. Essa seleção consta com sons binaurais que utilizei um tempo para dormir e focar em algumas atividades. Não é música. São apenas duas ondas de frequências diferentes tocando nos canais LR. [Aqui](https://pt.wikipedia.org/wiki/Binaural) tem mais informações sobre.
-- Your Top Songs 2016: playlist gerada automaticamente pelo Spotify com as músicas que mais ouvi em 2016. Talvez seja uma boa analisá-la e ver como foi o humor do ano. 
+* Roadetripe: Playlist para uma viagem. Minha ideia era uma playlist mais para cima contando com músicas contemplativas.
+* arcordar: Seleção upbeat, com boas vibrações, que deixam a manhã mais felizes\
+* badvibes only: Autoexplicativa
+* se reerguer: Playlist fundamental para fins de relacionamentos 
+* Samba pra Tereza: Uma seleção variada que fiz para minha companheira
+* binaural: É um ponto fora da curva. Essa seleção consta com sons binaurais que utilizei um tempo para dormir e focar em algumas atividades. Não é música. São apenas duas ondas de frequências diferentes tocando nos canais LR. [Aqui](https://pt.wikipedia.org/wiki/Binaural) tem mais informações sobre.
+* Your Top Songs 2016: playlist gerada automaticamente pelo Spotify com as músicas que mais ouvi em 2016. Talvez seja uma boa analisá-la e ver como foi o humor do ano. 
+* Liked from radio: playlist automaticamente gerada com as músicas que são favoritadas durante a reprodução de alguma rádio.
 
-```{r}
+```{r, echo=FALSE, results='hide',message=FALSE}
 dados = read_csv("../data/dados_pedro.csv")
 datatable(dados)
 ```
 
+#### 1. Como estão distribuídas as emoções nas playlists selecionadas?
 
-```{r}
-dados %>% 
-        arrange(playlist_name) %>%
+```{r, echo=FALSE, results='hide',message=FALSE}
+plemotions <- dados %>% 
         ggplot(aes(x=energy,
-                   group=playlist_name,
+                   label=track_name,
                     y= valence))+
         stat_density2d(aes(fill=..level..), geom="polygon", n = 100, h = .25) +
         scale_fill_viridis() +
@@ -43,4 +48,6 @@ dados %>%
         labs(title = "Emoção nas minhas playlists segundo o spotify", 
          x = "Energia (+ = rápida, alta, cheia de sons)", 
          y = "Valência (+ = animada, alegre, eufórica)")
+
+ggplotly(plemotions)
 ```
