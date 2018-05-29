@@ -175,58 +175,26 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHZpcmlkaXMpXG5saWJyYXJ5KGhlcmUpXG5saWJyYXJ5KGx1YnJpZGF0ZSlcbnRoZW1lX3NldCh0aGVtZV9taW5pbWFsKCkpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)
-library(viridis)
-library(here)
-library(lubridate)
-theme_set(theme_minimal())</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<div id="analisando-as-playlists-pessoais-do-spotify" class="section level3">
+<h3>Analisando as playlists pessoais do Spotify</h3>
+<p>Utilizando a biblioteca <code>spotifyr</code>, capturei dados do meu uso de Spotify. Inicilamente, pensei em analisar as minhas canções, álbums e artistas mais ouvidos. Entretanto existe uma peculiaridade dos aplicativos de streaming que é a possibilidade de criar playlists. Geralmente as playlists tem alguma ocasião ou intuito por trás dela. Por exemplo, pessoas gostam de se exercitar ouvindo música. Geralmente é uma playlist mais animada para dar “aquele gás” na academia. Outras preferem chorar o coração para fora com uma playlist bem elaborada.</p>
+<p>Com isso em mente, fui analisar minhas playlists: - Roadetripe: Playlist para uma viagem. Minha ideia era uma playlist mais para cima contando com músicas contemplativas. - arcordar: Seleção upbeat, com boas vibrações, que deixam a manhã mais felizes<br />
+- badvibes only: Autoexplicativa - se reerguer: Playlist fundamental para fins de relacionamentos - Samba pra Tereza: Uma seleção variada que fiz para minha companheira - binaural: É um ponto fora da curva. Essa seleção consta com sons binaurais que utilizei um tempo para dormir e focar em algumas atividades. Não é música. São apenas duas ondas de frequências diferentes tocando nos canais LR. <a href="https://pt.wikipedia.org/wiki/Binaural">Aqui</a> tem mais informações sobre. - Your Top Songs 2016: playlist gerada automaticamente pelo Spotify com as músicas que mais ouvi em 2016. Talvez seja uma boa analisá-la e ver como foi o humor do ano. - Liked from radio: playlist automaticamente gerada com as músicas que são favoritadas durante a reprodução de alguma rádio.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFkb3MgPSByZWFkX2NzdihcIi4uL2RhdGEvZGFkb3NfcGVkcm8uY3N2XCIpXG5gYGAifQ== -->
-<pre class="r"><code>dados = read_csv(&quot;../data/dados_pedro.csv&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUGFyc2VkIHdpdGggY29sdW1uIHNwZWNpZmljYXRpb246XG5jb2xzKFxuICAuZGVmYXVsdCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgcGxheWxpc3RfbnVtX3RyYWNrcyA9IGNvbF9pbnRlZ2VyKCksXG4gIHRyYWNrX3BvcHVsYXJpdHkgPSBjb2xfaW50ZWdlcigpLFxuICBkYW5jZWFiaWxpdHkgPSBjb2xfZG91YmxlKCksXG4gIGVuZXJneSA9IGNvbF9kb3VibGUoKSxcbiAgbG91ZG5lc3MgPSBjb2xfZG91YmxlKCksXG4gIHNwZWVjaGluZXNzID0gY29sX2RvdWJsZSgpLFxuICBhY291c3RpY25lc3MgPSBjb2xfZG91YmxlKCksXG4gIGluc3RydW1lbnRhbG5lc3MgPSBjb2xfZG91YmxlKCksXG4gIGxpdmVuZXNzID0gY29sX2RvdWJsZSgpLFxuICB2YWxlbmNlID0gY29sX2RvdWJsZSgpLFxuICB0ZW1wbyA9IGNvbF9kb3VibGUoKSxcbiAgZHVyYXRpb25fbXMgPSBjb2xfZG91YmxlKCksXG4gIHRpbWVfc2lnbmF0dXJlID0gY29sX2ludGVnZXIoKVxuKVxuU2VlIHNwZWMoLi4uKSBmb3IgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbnMuXG4ifQ== -->
-<pre><code>Parsed with column specification:
-cols(
-  .default = col_character(),
-  playlist_num_tracks = col_integer(),
-  track_popularity = col_integer(),
-  danceability = col_double(),
-  energy = col_double(),
-  loudness = col_double(),
-  speechiness = col_double(),
-  acousticness = col_double(),
-  instrumentalness = col_double(),
-  liveness = col_double(),
-  valence = col_double(),
-  tempo = col_double(),
-  duration_ms = col_double(),
-  time_signature = col_integer()
-)
-See spec(...) for full column specifications.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gZGFkb3NcbmBgYCJ9 -->
-<pre class="r"><code>df &lt;- dados</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<div id="como-estao-distribuidas-as-emocoes-nas-playlists-selecionadas" class="section level4">
+<h4>1. Como estão distribuídas as emoções nas playlists selecionadas?</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGFkb3MgJT4lIFxuICAgICAgICBhcnJhbmdlKHBsYXlsaXN0X25hbWUpXG5gYGAifQ== -->
-<pre class="r"><code>dados %&gt;% 
-        arrange(playlist_name)</code></pre>
-<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>“```{r} dados %&gt;% arrange(playlist_name) %&gt;% ggplot(aes(x = energy, group = artist, label = track_name, y = valence)) + stat_density2d(aes(fill=..level..), geom=”polygon“, n = 100, h = .25) + scale_fill_viridis() + # escalas de cores contínuas mais legíveis que as default # geom_density2d() + # ou o stat_density ou geom_density facet_wrap(~artist) + scale_x_continuous(limits = c(-.05, 1.05)) + scale_y_continuous(limits = c(-.05, 1.05)) + theme(legend.position =”None“) + labs(title =”Emoção nas gravações tropicalistas segundo o spotify“, subtitle =”A partir da análise de áudio de algumas centenas de faixas de cada um“, x =”Energia (+ = rápida, alta, cheia de sons)“, y =”Valência (+ = animada, alegre, eufórica)“)</p>
-<p>```&quot;</p>
-<!-- rnb-text-end -->
+</div>
+</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAicHJvYjJjcDMiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCmBgYHtyIG1lc3NhZ2U9RkFMU0UsIHdhcm5pbmc9RkFMU0V9CmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHZpcmlkaXMpCmxpYnJhcnkoaGVyZSkKbGlicmFyeShsdWJyaWRhdGUpCnRoZW1lX3NldCh0aGVtZV9taW5pbWFsKCkpCmBgYAoKYGBge3J9CmRhZG9zID0gcmVhZF9jc3YoIi4uL2RhdGEvZGFkb3NfcGVkcm8uY3N2IikKYGBgCgpgYGB7cn0KZGFkb3MgJT4lIAogICAgICAgIGFycmFuZ2UocGxheWxpc3RfbmFtZSkKYGBgCgoiYGBge3J9CmRhZG9zICU+JSAKICAgIGFycmFuZ2UocGxheWxpc3RfbmFtZSkgJT4lIAogICAgZ2dwbG90KGFlcyh4ID0gZW5lcmd5LCAKICAgICAgICAgICAgICAgZ3JvdXAgPSBhcnRpc3QsCiAgICAgICAgICAgICAgIGxhYmVsID0gdHJhY2tfbmFtZSwKICAgICAgICAgICAgICAgeSA9IHZhbGVuY2UpKSArIAogICAgc3RhdF9kZW5zaXR5MmQoYWVzKGZpbGw9Li5sZXZlbC4uKSwgZ2VvbT0icG9seWdvbiIsIG4gPSAxMDAsIGggPSAuMjUpICsKICAgIHNjYWxlX2ZpbGxfdmlyaWRpcygpICsgICMgZXNjYWxhcyBkZSBjb3JlcyBjb250w61udWFzIG1haXMgbGVnw612ZWlzIHF1ZSBhcyBkZWZhdWx0CiAgICAjIGdlb21fZGVuc2l0eTJkKCkgKyAjIG91IG8gc3RhdF9kZW5zaXR5IG91IGdlb21fZGVuc2l0eQogICAgZmFjZXRfd3JhcCh+YXJ0aXN0KSArIAogICAgc2NhbGVfeF9jb250aW51b3VzKGxpbWl0cyA9IGMoLS4wNSwgMS4wNSkpICsgCiAgICBzY2FsZV95X2NvbnRpbnVvdXMobGltaXRzID0gYygtLjA1LCAxLjA1KSkgKyAKICAgIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJOb25lIikgKyAKICAgIGxhYnModGl0bGUgPSAiRW1vw6fDo28gbmFzIGdyYXZhw6fDtWVzIHRyb3BpY2FsaXN0YXMgc2VndW5kbyBvIHNwb3RpZnkiLCAKICAgICAgICAgc3VidGl0bGUgPSAiQSBwYXJ0aXIgZGEgYW7DoWxpc2UgZGUgw6F1ZGlvIGRlIGFsZ3VtYXMgY2VudGVuYXMgZGUgZmFpeGFzIGRlIGNhZGEgdW0iLCAKICAgICAgICAgeCA9ICJFbmVyZ2lhICgrID0gcsOhcGlkYSwgYWx0YSwgY2hlaWEgZGUgc29ucykiLCAKICAgICAgICAgeSA9ICJWYWzDqm5jaWEgKCsgPSBhbmltYWRhLCBhbGVncmUsIGV1ZsOzcmljYSkiKQoKYGBgIg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAicHJvYjJjcDMiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCmBgYHtyIGVjaG89RkFMU0UsIHJlc3VsdHM9J2hpZGUnLG1lc3NhZ2U9RkFMU0V9CmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHZpcmlkaXMpCmxpYnJhcnkoaGVyZSkKbGlicmFyeShsdWJyaWRhdGUpCmxpYnJhcnkoRFQpCmxpYnJhcnkocGxvdGx5KQp0aGVtZV9zZXQodGhlbWVfbWluaW1hbCgpKQpgYGAKIyMjIEFuYWxpc2FuZG8gYXMgcGxheWxpc3RzIHBlc3NvYWlzIGRvIFNwb3RpZnkKClV0aWxpemFuZG8gYSBiaWJsaW90ZWNhIGBzcG90aWZ5cmAsIGNhcHR1cmVpIGRhZG9zIGRvIG1ldSB1c28gZGUgU3BvdGlmeS4gSW5pY2lsYW1lbnRlLCBwZW5zZWkgZW0gYW5hbGlzYXIgYXMgbWluaGFzIGNhbsOnw7Vlcywgw6FsYnVtcyBlIGFydGlzdGFzIG1haXMgb3V2aWRvcy4gRW50cmV0YW50byBleGlzdGUgdW1hIHBlY3VsaWFyaWRhZGUgZG9zIGFwbGljYXRpdm9zIGRlIHN0cmVhbWluZyBxdWUgw6kgYSBwb3NzaWJpbGlkYWRlIGRlIGNyaWFyIHBsYXlsaXN0cy4gR2VyYWxtZW50ZSBhcyBwbGF5bGlzdHMgdGVtIGFsZ3VtYSBvY2FzacOjbyBvdSBpbnR1aXRvIHBvciB0csOhcyBkZWxhLiBQb3IgZXhlbXBsbywgcGVzc29hcyBnb3N0YW0gZGUgc2UgZXhlcmNpdGFyIG91dmluZG8gbcO6c2ljYS4gR2VyYWxtZW50ZSDDqSB1bWEgcGxheWxpc3QgbWFpcyBhbmltYWRhIHBhcmEgZGFyICJhcXVlbGUgZ8OhcyIgbmEgYWNhZGVtaWEuIE91dHJhcyBwcmVmZXJlbSBjaG9yYXIgbyBjb3Jhw6fDo28gcGFyYSBmb3JhIGNvbSB1bWEgcGxheWxpc3QgYmVtIGVsYWJvcmFkYS4gCgpDb20gaXNzbyBlbSBtZW50ZSwgZnVpIGFuYWxpc2FyIG1pbmhhcyBwbGF5bGlzdHM6Ci0gUm9hZGV0cmlwZTogUGxheWxpc3QgcGFyYSB1bWEgdmlhZ2VtLiBNaW5oYSBpZGVpYSBlcmEgdW1hIHBsYXlsaXN0IG1haXMgcGFyYSBjaW1hIGNvbnRhbmRvIGNvbSBtw7pzaWNhcyBjb250ZW1wbGF0aXZhcy4KLSBhcmNvcmRhcjogU2VsZcOnw6NvIHVwYmVhdCwgY29tIGJvYXMgdmlicmHDp8O1ZXMsIHF1ZSBkZWl4YW0gYSBtYW5ow6MgbWFpcyBmZWxpemVzXAotIGJhZHZpYmVzIG9ubHk6IEF1dG9leHBsaWNhdGl2YQotIHNlIHJlZXJndWVyOiBQbGF5bGlzdCBmdW5kYW1lbnRhbCBwYXJhIGZpbnMgZGUgcmVsYWNpb25hbWVudG9zIAotIFNhbWJhIHByYSBUZXJlemE6IFVtYSBzZWxlw6fDo28gdmFyaWFkYSBxdWUgZml6IHBhcmEgbWluaGEgY29tcGFuaGVpcmEKLSBiaW5hdXJhbDogw4kgdW0gcG9udG8gZm9yYSBkYSBjdXJ2YS4gRXNzYSBzZWxlw6fDo28gY29uc3RhIGNvbSBzb25zIGJpbmF1cmFpcyBxdWUgdXRpbGl6ZWkgdW0gdGVtcG8gcGFyYSBkb3JtaXIgZSBmb2NhciBlbSBhbGd1bWFzIGF0aXZpZGFkZXMuIE7Do28gw6kgbcO6c2ljYS4gU8OjbyBhcGVuYXMgZHVhcyBvbmRhcyBkZSBmcmVxdcOqbmNpYXMgZGlmZXJlbnRlcyB0b2NhbmRvIG5vcyBjYW5haXMgTFIuIFtBcXVpXShodHRwczovL3B0Lndpa2lwZWRpYS5vcmcvd2lraS9CaW5hdXJhbCkgdGVtIG1haXMgaW5mb3JtYcOnw7VlcyBzb2JyZS4KLSBZb3VyIFRvcCBTb25ncyAyMDE2OiBwbGF5bGlzdCBnZXJhZGEgYXV0b21hdGljYW1lbnRlIHBlbG8gU3BvdGlmeSBjb20gYXMgbcO6c2ljYXMgcXVlIG1haXMgb3V2aSBlbSAyMDE2LiBUYWx2ZXogc2VqYSB1bWEgYm9hIGFuYWxpc8OhLWxhIGUgdmVyIGNvbW8gZm9pIG8gaHVtb3IgZG8gYW5vLiAKLSBMaWtlZCBmcm9tIHJhZGlvOiBwbGF5bGlzdCBhdXRvbWF0aWNhbWVudGUgZ2VyYWRhIGNvbSBhcyBtw7pzaWNhcyBxdWUgc8OjbyBmYXZvcml0YWRhcyBkdXJhbnRlIGEgcmVwcm9kdcOnw6NvIGRlIGFsZ3VtYSByw6FkaW8uCgpgYGB7ciBlY2hvPUZBTFNFLCByZXN1bHRzPSdoaWRlJyxtZXNzYWdlPUZBTFNFfQpkYWRvcyA9IHJlYWRfY3N2KCIuLi9kYXRhL2RhZG9zX3BlZHJvLmNzdiIpCmRhdGF0YWJsZShkYWRvcykKYGBgCgojIyMjIDEuIENvbW8gZXN0w6NvIGRpc3RyaWJ1w61kYXMgYXMgZW1vw6fDtWVzIG5hcyBwbGF5bGlzdHMgc2VsZWNpb25hZGFzPwoKYGBge3IgZWNobz1GQUxTRSwgcmVzdWx0cz0naGlkZScsbWVzc2FnZT1GQUxTRX0KcGxlbW90aW9ucyA8LSBkYWRvcyAlPiUgCiAgICAgICAgZ2dwbG90KGFlcyh4PWVuZXJneSwKICAgICAgICAgICAgICAgICAgIGxhYmVsPXRyYWNrX25hbWUsCiAgICAgICAgICAgICAgICAgICAgeT0gdmFsZW5jZSkpKwogICAgICAgIHN0YXRfZGVuc2l0eTJkKGFlcyhmaWxsPS4ubGV2ZWwuLiksIGdlb209InBvbHlnb24iLCBuID0gMTAwLCBoID0gLjI1KSArCiAgICAgICAgc2NhbGVfZmlsbF92aXJpZGlzKCkgKwogICAgICAgIGZhY2V0X3dyYXAofiBwbGF5bGlzdF9uYW1lKSArCiAgICAgICAgc2NhbGVfeF9jb250aW51b3VzKGxpbWl0cyA9IGMoLS4wNSwgMS4wNSkpICsgCiAgICAgICAgc2NhbGVfeV9jb250aW51b3VzKGxpbWl0cyA9IGMoLS4wNSwgMS4wNSkpICsKICAgICAgICBsYWJzKHRpdGxlID0gIkVtb8Onw6NvIG5hcyBtaW5oYXMgcGxheWxpc3RzIHNlZ3VuZG8gbyBzcG90aWZ5IiwgCiAgICAgICAgIHggPSAiRW5lcmdpYSAoKyA9IHLDoXBpZGEsIGFsdGEsIGNoZWlhIGRlIHNvbnMpIiwgCiAgICAgICAgIHkgPSAiVmFsw6puY2lhICgrID0gYW5pbWFkYSwgYWxlZ3JlLCBldWbDs3JpY2EpIikKCmdncGxvdGx5KHBsZW1vdGlvbnMpCmBgYAo=</div>
 
 
 
