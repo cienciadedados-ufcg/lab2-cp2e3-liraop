@@ -11,32 +11,28 @@ library(lubridate)
 theme_set(theme_minimal())
 ```
 
+Utilizando a biblioteca `spotifyr`, capturei dados do meu uso de Spotify. Inicilamente, pensei em analisar as minhas canções, álbums e artistas mais ouvidos. Entretanto existe uma peculiaridade dos aplicativos de streaming que é a possibilidade de criar playlists. Geralmente as playlists tem alguma ocasião ou intuito por trás dela. Por exemplo, pessoas gostam de se exercitar ouvindo música. Geralmente é uma playlist mais animada para dar "aquele gás" na academia. Outras preferem chorar o coração para fora com uma playlist bem elaborada. 
+
+Com isso em mente, fui analisar minhas playlists. 
+
 ```{r}
 dados = read_csv("../data/dados_pedro.csv")
+dados
 ```
+
 
 ```{r}
 dados %>% 
-        arrange(playlist_name)
-```
-
-"```{r}
-dados %>% 
-    arrange(playlist_name) %>% 
-    ggplot(aes(x = energy, 
-               group = artist,
-               label = track_name,
-               y = valence)) + 
-    stat_density2d(aes(fill=..level..), geom="polygon", n = 100, h = .25) +
-    scale_fill_viridis() +  # escalas de cores contínuas mais legíveis que as default
-    # geom_density2d() + # ou o stat_density ou geom_density
-    facet_wrap(~artist) + 
-    scale_x_continuous(limits = c(-.05, 1.05)) + 
-    scale_y_continuous(limits = c(-.05, 1.05)) + 
-    theme(legend.position = "None") + 
-    labs(title = "Emoção nas gravações tropicalistas segundo o spotify", 
-         subtitle = "A partir da análise de áudio de algumas centenas de faixas de cada um", 
+        arrange(playlist_name) %>%
+        ggplot(aes(x=energy,
+                   group=playlist_name,
+                    y= valence))+
+        stat_density2d(aes(fill=..level..), geom="polygon", n = 100, h = .25) +
+        scale_fill_viridis() +
+        facet_wrap(~ playlist_name) +
+        scale_x_continuous(limits = c(-.05, 1.05)) + 
+        scale_y_continuous(limits = c(-.05, 1.05)) +
+        labs(title = "Emoção nas minhas playlists segundo o spotify", 
          x = "Energia (+ = rápida, alta, cheia de sons)", 
          y = "Valência (+ = animada, alegre, eufórica)")
-
-```"
+```
